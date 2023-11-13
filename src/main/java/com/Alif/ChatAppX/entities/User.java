@@ -31,7 +31,7 @@ public class User implements UserDetails {
     private Role role;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Message> messages;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Chat chats;
 
 

@@ -1,4 +1,4 @@
-package com.Alif.ChatAppX.chat;
+package com.Alif.ChatAppX.messageConfig;
 
 
 
@@ -71,7 +71,9 @@ public class MyHandler implements WebSocketHandler{
             List<User> users = new ArrayList<>();
             users.add(message.getSender());
             users.add(message.getSender());
-            newChat.setUsers(users);
+            newChat.setSenderUser(message.getSender());
+            newChat.setRecipientUser(message.getRecipient());
+            //newChat.setUsers(users);
             newChat.setCreateAt(LocalDateTime.now().toString());
             newChat.setUpdatedAt(LocalDateTime.now().toString());
             chatRepository.save(newChat);

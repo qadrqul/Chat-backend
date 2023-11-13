@@ -1,6 +1,5 @@
-package com.Alif.ChatAppX.chat;
+package com.Alif.ChatAppX.messageConfig;
 
-import com.Alif.ChatAppX.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;

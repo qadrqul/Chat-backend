@@ -1,4 +1,4 @@
-package com.Alif.ChatAppX.chat;
+package com.Alif.ChatAppX.messageConfig;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;

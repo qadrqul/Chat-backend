@@ -1,4 +1,4 @@
-package com.Alif.ChatAppX.chat;
+package com.Alif.ChatAppX.messageConfig;
 
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;

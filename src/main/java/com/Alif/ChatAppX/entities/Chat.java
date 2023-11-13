@@ -20,8 +20,10 @@ public class Chat {
     private String type;
     private String createAt;
     private String updatedAt;
-    @OneToMany(mappedBy = "chats")
-    private List<User> users;
+    @OneToOne(mappedBy = "chats")
+    private User senderUser;
+    @OneToOne(mappedBy = "chats")
+    private User recipientUser;
     private String sender;
     private String recipient;
     @OneToMany(cascade = CascadeType.ALL)
