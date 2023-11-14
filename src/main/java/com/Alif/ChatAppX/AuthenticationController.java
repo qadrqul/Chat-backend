@@ -3,9 +3,12 @@ package com.Alif.ChatAppX;
 import com.Alif.ChatAppX.dto.RegisterRequest;
 import com.Alif.ChatAppX.dto.auth.AuthenticationRequest;
 import com.Alif.ChatAppX.service.AuthenticationService;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -27,6 +30,5 @@ public class AuthenticationController {
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
     }
-
 
 }

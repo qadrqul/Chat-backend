@@ -21,12 +21,10 @@ public class Chat {
     private String createAt;
     private String updatedAt;
     @OneToOne(mappedBy = "chats")
-    private User senderUser;
-    @OneToOne(mappedBy = "chats")
-    private User recipientUser;
+    private User user;
     private String sender;
     private String recipient;
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Message> messages;
 
 }

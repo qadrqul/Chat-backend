@@ -3,6 +3,7 @@ package com.Alif.ChatAppX.messageConfig;
 
 
 import com.Alif.ChatAppX.dto.message.MessageRequest;
+import com.Alif.ChatAppX.dto.message.TypeMessage;
 import com.Alif.ChatAppX.entities.Chat;
 import com.Alif.ChatAppX.entities.Message;
 import com.Alif.ChatAppX.entities.User;
@@ -53,40 +54,60 @@ public class MyHandler implements WebSocketHandler{
         System.out.println("Payload: " + payload);
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        MessageRequest messageRequest = objectMapper.readValue(payload, MessageRequest.class);
-        Optional<Chat> chat = chatRepository.findBySenderAndRecipientOrRecipientAndSender(
-                messageRequest.getSender(),
-                messageRequest.getRecipient(),
-                messageRequest.getSender(),
-                messageRequest.getRecipient()
-        );        if (chat.isEmpty()){
-            Chat newChat = new Chat();
-            Message message = messageService.toEntity(messageRequest);
-            List<Message> messages = new ArrayList<>();
-            messages.add(message);
-            newChat.setMessages(messages);
-            newChat.setSender(message.getSender().getEmail());
-            newChat.setRecipient(message.getRecipient().getEmail());
-            newChat.setType("OneToOne");
-            List<User> users = new ArrayList<>();
-            users.add(message.getSender());
-            users.add(message.getSender());
-            newChat.setSenderUser(message.getSender());
-            newChat.setRecipientUser(message.getRecipient());
-            //newChat.setUsers(users);
-            newChat.setCreateAt(LocalDateTime.now().toString());
-            newChat.setUpdatedAt(LocalDateTime.now().toString());
-            chatRepository.save(newChat);
-        }
-        else {
+        TypeMessage typeMessage = objectMapper.readValue(payload, TypeMessage.class);
+        MessageRequest messageRequest =  typeMessage.getMessageRequest();
 
+        if (typeMessage.getType().equals("OneToOne")) {
+
+            Optional<Chat> chat = chatRepository.findBySenderAndRecipientOrRecipientAndSender(
+                    messageRequest.getSender(),
+                    messageRequest.getRecipient(),
+                    messageRequest.getSender(),
+                    messageRequest.getRecipient()
+            );
+            if (chat.isEmpty()) {
+                Chat newChat = new Chat();
+                Message message = messageService.toEntity(messageRequest);
+                List<Message> messages = new ArrayList<>();
+                messages.add(message);
+                newChat.setMessages(messages);
+                newChat.setSender(message.getSender().getEmail());
+                newChat.setRecipient(message.getRecipient().getEmail());
+                newChat.setType("OneToOne");
+                List<User> users = new ArrayList<>();
+                users.add(message.getSender());
+                users.add(message.getSender());
+
+                //newChat.setUsers(users);
+                newChat.setCreateAt(LocalDateTime.now().toString());
+                newChat.setUpdatedAt(LocalDateTime.now().toString());
+                Long chatId =  chatRepository.save(newChat).getId();
+                typeMessage.setId(chatId);
+            } else {
+                List<Message> messages = new ArrayList<>();
+                if (!chat.get().getMessages().isEmpty()) {
+                    System.out.println("its not empty");
+                    messages = chat.get().getMessages();
+                } else {
+                    System.out.println("its empty");
+                }
+
+                messages.add(messageService.toEntity(messageRequest));
+                typeMessage.setId(chat.get().getId());
+                chat.get().setMessages(messages);
+                chat.get().setUpdatedAt(LocalDateTime.now().toString());
+                chatRepository.save(chat.get());
+            }
         }
+
+
+//        }
 
         WebSocketSession recipientSession = userSessions.get(messageRequest.getRecipient());
         ObjectMapper objectMapper1 = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         if (recipientSession!=null && recipientSession.isOpen()){
-            recipientSession.sendMessage(new TextMessage(objectMapper1.writeValueAsString(messageRequest)));
+            recipientSession.sendMessage(new TextMessage(objectMapper1.writeValueAsString(typeMessage)));
         }
 
 
