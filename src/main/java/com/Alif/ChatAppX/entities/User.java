@@ -33,6 +33,8 @@ public class User implements UserDetails {
     private List<Message> messages;
     @OneToOne(cascade = CascadeType.ALL)
     private Chat chats;
+    @ManyToMany()
+    private List<Group> groups;
 
 
     @Override

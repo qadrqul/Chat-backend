@@ -34,5 +34,8 @@ public class FileData {
     @ManyToOne()
     private Message message;
 
+    @OneToOne(mappedBy = "groupImage")
+    private Group group;
+
 
 }

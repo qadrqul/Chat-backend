@@ -1,4 +1,4 @@
-package com.Alif.ChatAppX;
+package com.Alif.ChatAppX.controller;
 
 import com.Alif.ChatAppX.dto.RegisterRequest;
 import com.Alif.ChatAppX.dto.auth.AuthenticationRequest;

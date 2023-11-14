@@ -1,7 +1,13 @@
 package com.Alif.ChatAppX.service.impl;
 
+import com.Alif.ChatAppX.dto.message.GroupRequest;
 import com.Alif.ChatAppX.dto.message.MessageRequest;
+import com.Alif.ChatAppX.entities.Group;
 import com.Alif.ChatAppX.entities.Message;
+import com.Alif.ChatAppX.entities.User;
+import com.Alif.ChatAppX.mapper.FileDataMapper;
+import com.Alif.ChatAppX.repository.FileRepository;
+import com.Alif.ChatAppX.repository.GroupRepository;
 import com.Alif.ChatAppX.repository.UserRepository;
 import com.Alif.ChatAppX.service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -10,10 +16,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
+    private final FileRepository fileRepository;
+    private final FileDataMapper fileDataMapper;
+    private final GroupRepository groupRepository;
     @Override
     public Message toEntity(String payload)   {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -42,5 +55,29 @@ public class MessageServiceImpl implements MessageService {
         message1.setCreatedAt(message.getCreatedAt());
         message1.setREad(message.getIsRead());
         return message1;
+    }
+
+    @Override
+    public void createGroup(GroupRequest groupRequest) {
+
+        Group group = new Group();
+        group.setAdminNickName(groupRequest.getAdminNickname());
+        group.setGroupName(groupRequest.getGroupName());
+        group.setCreatedTime(LocalDateTime.now().toString());
+        group.setMessages(new ArrayList<>());
+
+
+        List<User> users = new ArrayList<>();
+        for (String nickname: groupRequest.getUserNickNames()){
+            users.add(userRepository.findByNickname(nickname).get());
+        }
+        group.setUsers(users);
+        if (groupRequest.getGroupImageId()!=null){
+            group.setGroupImage(fileRepository.findById(groupRequest.getGroupImageId()).get());
+
+        }
+        groupRepository.save(group);
+
+
     }
 }

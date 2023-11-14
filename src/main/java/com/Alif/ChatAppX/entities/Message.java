@@ -31,4 +31,7 @@ public class Message {
 
     @ManyToOne()
     private Chat chat;
+
+    @ManyToOne()
+    private Group group;
 }
